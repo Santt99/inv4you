@@ -11,6 +11,7 @@ def index():
 def home():
     email = request.form.get('email')
     password = request.form.get('password')
+    print(email)
     print(password)
     return 'home'
 
