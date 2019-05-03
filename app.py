@@ -18,6 +18,10 @@ def home():
 @app.route('/register')
 def register():
     return render_template('./auth/register.html')
+
+@app.route('/styles.css')
+def sendStyles():
+    return app.send_static_file('./templates/styles.css')
     
 
 if __name__ == '__main__':
