@@ -7,20 +7,23 @@
       <form action="/home" method="post">
         <div class="row">
             <div class="input-field col s12">
-                <input name="email" id="email" type="email" class="validate baskerville" required>
+                <input name="email" id="email" type="email" class="validate baskerville" required maxlength="50">
                 <label for="email" class="baskerville">Email</label>
             </div>
             
         </div>
         <div class="row">
             <div class="input-field col s12 ">
-              <input name="password" id="password" type="password" class="validate baskerville" required>
+              <input name="password" id="password" type="password" class="validate baskerville" required maxlength="50">
               <label for="password" class="baskerville">Password</label>
             </div>
         </div>
         <button class="btn waves-effect waves-light teal darken-1 baskerville" >Login
             <i class="material-icons right ">send</i>
         </button>
+        <div class="row small-space-top">
+          
+        </div> 
       </form>
       
     </div>

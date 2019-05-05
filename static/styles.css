@@ -1,3 +1,11 @@
 .baskerville {
 	font-family: 'Libre Baskerville', serif;
 }
+
+.baskerville-green {
+	font-family: 'Libre Baskerville', serif;
+	color: green;
+}
+.small-space-top {
+	margin-top: 10%;
+}

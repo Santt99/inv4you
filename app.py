@@ -1,23 +1,34 @@
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('./auth/login.html')
+    return render_template('./auth/login.html', stat="")
 
 @app.route('/home', methods=["POST"])
 def home():
     email = request.form.get('email')
     password = request.form.get('password')
-    print(email)
-    print(password)
+    print(len(email))
+    print(len(password))
     return 'home'
 
-@app.route('/register')
+@app.route('/register', methods=["POST", "GET"])
 def register():
-    return render_template('./auth/register.html')
+    if request.method == 'POST':
+        email = request.form.get('email')
+        password = request.form.get('password')
+        emailLength = len(email)
+        passwordLength = len(password)
+        if  emailLength > 0 and emailLength < 51 and passwordLength > 0 and passwordLength < 51:
+            print(email)
+            prin
+            return render_template('./auth/login.html', stat = "User Register Succed!")
+    elif request.method == 'GET':
+        return render_template('./auth/register.html')
+        
 
 @app.route('/styles.css')
 def sendStyles():

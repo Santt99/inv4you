@@ -1,20 +1,21 @@
 {% extends 'layout.html' %}
 
 {% block body %}
+
 <div class="container valign-wrapper" >
   <div class="row s12" style="padding-top: 10%;" >
     <div class="col s12">
       <form action="/register" method="POST">
         <div class="row">
             <div class="input-field col s12">
-                <input name="email" id="email" type="email" class="validate baskerville" required>
+                <input name="email" id="email" type="email" class="validate baskerville" required maxlength="50">
                 <label for="email"class="baskerville" >Email</label>
             </div>
             
         </div>
         <div class="row">
             <div class="input-field col s12">
-              <input name="password" id="password" type="password" class="validate baskerville" required>
+              <input name="password" id="password" type="password" class="validate baskerville" required maxlength="50">
               <label for="password" class="baskerville">Password</label>
             </div>
         </div>
@@ -22,7 +23,7 @@
             <i class="material-icons right ">send</i>
         </button>
       </form>
-      
+      <p1 class="baskerville-green s12 "value=>{{stat}}</p1>
     </div>
   </div>
 </div>
