@@ -1,31 +1,35 @@
 
-from flask import Flask, render_template, request, redirect
-
+from flask import Flask, render_template, request, redirect,url_for
+from db import Database
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return render_template('./auth/login.html', stat="")
+    return render_template('./auth/login.html')
+
 
 @app.route('/home', methods=["POST"])
 def home():
+    db = Database()
     email = request.form.get('email')
     password = request.form.get('password')
-    print(len(email))
-    print(len(password))
-    return 'home'
+    auth = db.login(email,password)
+    if auth != None:
+        return 'home'
+    else:
+        return redirect('/')
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
+    db = Database()
     if request.method == 'POST':
         email = request.form.get('email')
         password = request.form.get('password')
-        emailLength = len(email)
-        passwordLength = len(password)
-        if  emailLength > 0 and emailLength < 51 and passwordLength > 0 and passwordLength < 51:
-            print(email)
-            prin
-            return render_template('./auth/login.html', stat = "User Register Succed!")
+        dbResponse = db.createUser(email,password)
+        if dbResponse:
+            return redirect('/')
+        else: 
+            return redirect('/')
     elif request.method == 'GET':
         return render_template('./auth/register.html')
         

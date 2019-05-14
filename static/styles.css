@@ -1,11 +1,10 @@
 .baskerville {
-	font-family: 'Libre Baskerville', serif;
+	font-family: 'Ubuntu', sans-serif;
 }
 
-.baskerville-green {
-	font-family: 'Libre Baskerville', serif;
-	color: green;
-}
 .small-space-top {
 	margin-top: 10%;
+}
+.nunito{
+	font-family: 'Nunito', sans-serif;
 }
