@@ -22,7 +22,17 @@
             <i class="material-icons right ">send</i>
         </button>
         <div class="row small-space-top">
-          <p1 class="baskerville right">{{status}}</p1>
+            {% with messages = get_flashed_messages()  %}
+            {% if messages %}
+            {% if 'User Added Successfully' == messages[0] %}
+              <p1 class="nunito-green right">{{messages[0]}}</p1>
+            {% elif 'Email or Password is wrong!!' == messages[0] %}
+              <p1 class="nunito-red right">{{messages[0]}}</p1>
+            {% elif 'User Added Fail' == messages[0] %}
+              <p1 class="nunito-red right">{{messages[0]}}</p1>
+            {% endif %}  
+            {% endif %}  
+            {% endwith %}
         </div> 
       </form>
       

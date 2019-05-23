@@ -1,10 +1,13 @@
 
-from flask import Flask, render_template, request, redirect,url_for
+from flask import Flask, render_template, request, redirect,url_for, flash
 from db import Database
 app = Flask(__name__)
 
+# settings
+app.secret_key = "mysecretkey"
+
 @app.route('/')
-def index():
+def Index():
     return render_template('./auth/login.html')
 
 
@@ -15,9 +18,10 @@ def home():
     password = request.form.get('password')
     auth = db.login(email,password)
     if auth != None:
-        return 'home'
+        return render_template('home.html')
     else:
-        return redirect('/')
+        flash('Email or Password is wrong!!')
+        return redirect(url_for('Index'))
 
 @app.route('/register', methods=["POST", "GET"])
 def register():
@@ -26,10 +30,13 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         dbResponse = db.createUser(email,password)
+        print(dbResponse)
         if dbResponse:
-            return redirect('/')
+            flash('User Added Successfully')
+            return redirect(url_for('Index'))
         else: 
-            return redirect('/')
+            flash('User Added Fail')
+            return redirect(url_for('Index'))
     elif request.method == 'GET':
         return render_template('./auth/register.html')
         
