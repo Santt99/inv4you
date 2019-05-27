@@ -1,0 +1,27 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="container valign-wrapper " >
+    <div class="row s12" style="padding-top: 10%;" >
+        <div class="col s12">
+            <form action="/saveNewInv" method="post">
+                <div class="row">
+                    <div class="input-field col s12">
+                        <input name="title" id="title" type="text" class="validate baskerville" required maxlength="50">
+                        <label for="title" class="baskerville">Title</label>
+                    </div>
+                    
+                </div>
+                <div class="row">
+                    <div class="input-field col s12 ">
+                    <input name="description" id="description" type="text" class="validate baskerville" required maxlength="150">
+                    <label for="description" class="baskerville">Description</label>
+                    </div>
+                </div>
+                <button class="btn waves-effect waves-light teal darken-1 baskerville" >Create
+                    <i class="material-icons right ">send</i>
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -9,53 +9,74 @@ class Database:
         db = "xpba22f95w8rrd8q"
         self.connection = pymysql.connect(host=host, user=user, password=password,db =db, cursorclass=pymysql.cursors.
                                    DictCursor)
-        self.cursor = self.connection.cursor()
+       
 
     def createUser(self,email,password):
+        cursor = self.connection.cursor()
         try:
-            with  self.cursor as cursor:
-                self.cursor.execute("SELECT * FROM users WHERE email=%s;",(email))
+            with  cursor:
+                cursor.execute("SELECT * FROM users WHERE email=%s;",(email))
                 result = cursor.fetchone()
                 if result == None:
-                    self.cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s)",(email,password))
-                    return True
+                    cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s);",(email,password))
+                    result =  True
                 else: 
                     print("User all ready exists!")
-                    return False;
+                    result =  False
             self.connection.commit()
         finally:
-            self.connection.close()
+            cursor.close()
+            return result
             
 
     def login(self,email,password):
+        cursor = self.connection.cursor()
         response = ""
         try:
-            with  self.cursor as cursor:
-             
-                self.cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s;",(email,password))
+            with  cursor:
+                cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s;",(email,password))
                 result = cursor.fetchone()
                 response = result  
         finally:
-            self.connection.close()
+            cursor.close()
             return response
     
-    def searchForUserFiles(self,id):
+    def searchForUserInventories(self,id):
+        cursor = self.connection.cursor()
         response = ""
         try:
-            with  self.cursor as cursor:
-                self.cursor.execute("SELECT name,path,description FROM files WHERE owner_id=%s",(id))
-                result = cursor.fetchone()
+            with  cursor:
+                query = "SELECT title,description,inventory_id FROM inventories WHERE owner_id=" + str(id) + ";"
+                cursor.execute(query)
+                result = cursor.fetchall()
                 response = result  
         finally:
-            self.connection.close()
+            cursor.close()
             return response
+            
 
-    def createFile(self, owner_id, name, description, path):
+    def deleteInventory(self,id):
+        cursor = self.connection.cursor()
+        try:
+            with  cursor:
+                query = "DELETE FROM inventories WHERE inventory_id=" + str(id) + ";"
+                cursor.execute(query)
+            self.connection.commit()
+        except:
+            return False
+        finally:
+            cursor.close()
+            return True
+
+    def createInventory(self, owner_id, title, description):
+        cursor = self.connection.cursor()
         response = ""
         try:
-            with  self.cursor as cursor:
-                self.cursor.execute("INSERT INTO files (owner_id, name, description, path) VALUES (%s, %s, %s, %s)",(owner_id, name, description, path))
-                return True
+            with  cursor:
+                cursor.execute("INSERT INTO inventories (owner_id, title ,description) VALUES (%s, %s, %s)",(owner_id, title, description))
             self.connection.commit()
+        except:
+            return False
         finally:
-            self.connection.close()
+            cursor.close()
+            return True
