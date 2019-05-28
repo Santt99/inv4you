@@ -28,6 +28,33 @@ class Database:
             cursor.close()
             return result
             
+    def extractTableData(self,table):
+        cursor = self.connection.cursor()
+        response = ""
+        try:
+            with  cursor:
+                query = "SELECT * FROM xpba22f95w8rrd8q.`" + table + "`"
+                cursor.execute(query)
+                result = cursor.fetchall()
+                response = result
+        except e:
+            print(e)
+        finally:
+            cursor.close()
+            return response
+
+    def getTableNameById(self, id):
+        cursor = self.connection.cursor()
+        response = ""
+        try:
+            with  cursor:
+                query = "SELECT title FROM inventories WHERE inventory_id=" + str(id) + ";"
+                cursor.execute(query)
+                result = cursor.fetchall()
+                response = result  
+        finally:
+            cursor.close()
+            return response
 
     def login(self,email,password):
         cursor = self.connection.cursor()

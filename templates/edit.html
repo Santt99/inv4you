@@ -1,0 +1,31 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+    <div class="container">
+        <div class="row">
+            <h1>{{title}}</h1>
+        </div>
+        <div class="row">
+                <table>
+                    <thead>
+                        <tr>
+                            {% for column in columns %}
+                                <th>{{column}}</th>
+                            {% endfor %}
+                            <th><a href="/addColumn/{{id}}"><img src="../static/img/baseline-add-24px.svg" alt=""></a></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in data %}
+                            <tr>
+                                {% for key,value in row.items() %}
+                                    <td>{{value}}</td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+        </div>
+            
+    </div>
+{% endblock %}

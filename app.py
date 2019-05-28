@@ -5,6 +5,7 @@ from werkzeug.utils import secure_filename
 import pandas as pd
 import sqlalchemy
 app = Flask(__name__)
+import json
 
 # settings
 app.secret_key = "mysecretkey"
@@ -63,6 +64,20 @@ def create():
     if 'id' in session: 
         flash('User Logged Successfully')
         return render_template('createNewInv.html')
+    else:
+        redirect(url_for(Index))
+
+@app.route('/edit/<id>')
+def edit(id):
+    if 'id' in session: 
+        tableTitle = db.getTableNameById(id)
+        print(tableTitle[0]["title"])
+        res = db.extractTableData(tableTitle[0]["title"])
+        columns = set()
+        for key in res[0].keys():
+            columns.add(key)
+        flash('User Logged Successfully')
+        return render_template('edit.html', columns= columns, title=tableTitle[0]["title"], id=id, data=res).encode('unicode')
     else:
         redirect(url_for(Index))
 
