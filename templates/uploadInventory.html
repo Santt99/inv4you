@@ -1,0 +1,24 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="container valign-wrapper " >
+    <div class="row s12" style="padding-top: 10%;" >
+        <div class="col s12">
+            <form action="/uploadInv" method="POST" enctype="multipart/form-data">
+                <div class="row">
+                    <input name="inv" id="inv" type="file" class="validate baskerville input-field col s12" required>
+                </div>
+                <div class="row">
+                    <input name="description" id="description" type="text" class="validate baskerville input-field col s12 " required maxlength="150">
+                    <label for="description" class="baskerville">Description</label>
+                </div>
+                
+                
+                <button class="btn waves-effect waves-light teal darken-1 baskerville" >Create
+                    <i class="material-icons right ">send</i>
+                </button>
+            </form>
+            
+        </div>
+    </div>
+</div>
+{% endblock %}
