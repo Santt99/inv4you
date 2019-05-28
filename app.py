@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, redirect,url_for, flash, sess
 from db import Database
 from werkzeug.utils import secure_filename
 import pandas as pd
-import d6tstack.utils
+import sqlalchemy
 app = Flask(__name__)
 
 # settings
@@ -106,8 +106,8 @@ def uploadInv():
                     file = request.files["inv"]
                     file.save(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
                     df = pd.read_csv(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
-                    uri_mssql = 'mysql://m7479tvdnwwfimqo:jse16k4dx7nd6l8l@a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/xpba22f95w8rrd8q'
-                    d6tstack.utils.pd_to_mssql(df, uri_mssql, 'table', 'schema') 
+                    engine = sqlalchemy.create_engine('mysql://m7479tvdnwwfimqo:jse16k4dx7nd6l8l@a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/xpba22f95w8rrd8q')
+                    print(df.to_sql(name=file.filename, con=engine, index=False, if_exists='replace'))
                     print(file.filename + " saved!")
                     des = request.form.get('description')
                     response = db.createInventory(session['id'], file.filename, des)
