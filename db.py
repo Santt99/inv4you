@@ -24,6 +24,24 @@ class Database:
                     print("User all ready exists!")
                     result =  False
             self.connection.commit()
+        except e:
+            print(e)
+        finally:
+            cursor.close()
+            return result
+
+    def addColumn(self, tableTitle):
+        cursor = self.connection.cursor()
+        result = False
+        try:
+            with  cursor:
+                    cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s);",(email,password))
+                    result =  True
+                    print("User all ready exists!")
+                    result =  False
+            self.connection.commit()
+        except e:
+            print(e)
         finally:
             cursor.close()
             return result
@@ -51,7 +69,26 @@ class Database:
                 query = "SELECT title FROM inventories WHERE inventory_id=" + str(id) + ";"
                 cursor.execute(query)
                 result = cursor.fetchall()
-                response = result  
+                response = result
+        except e:
+            print(e)
+        finally:
+            cursor.close()
+            return response
+
+    def createSQLTable(self, tableTitle):
+        cursor = self.connection.cursor()
+        response = False
+        try:
+            with  cursor:
+                query = "CREATE TABLE " + str(tableTitle) + " (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY);"
+                print (query)
+                cursor.execute(query)
+                result = cursor.fetchall()
+                response = True
+        except e:
+            print(e)
+            response = False
         finally:
             cursor.close()
             return response
@@ -64,6 +101,8 @@ class Database:
                 cursor.execute("SELECT * FROM users WHERE email=%s AND password=%s;",(email,password))
                 result = cursor.fetchone()
                 response = result  
+        except e:
+            print(e)
         finally:
             cursor.close()
             return response
@@ -77,6 +116,8 @@ class Database:
                 cursor.execute(query)
                 result = cursor.fetchall()
                 response = result  
+        except e:
+            print(e)
         finally:
             cursor.close()
             return response

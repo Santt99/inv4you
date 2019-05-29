@@ -3,24 +3,28 @@
 {% block body %}
     <div class="container">
         <div class="row">
-            <h1>{{title}}</h1>
+            <h1 class="baskerville left">{{title}}</h1> 
+        </div>
+        <div class="row">
+            <p><a href="/newRow/{{id}}" class="baskerville left">Create New Row</a></p>
         </div>
         <div class="row">
                 <table>
                     <thead>
                         <tr>
                             {% for column in columns %}
-                                <th>{{column}}</th>
+                                <th class="baskerville">{{column}}</th>
                             {% endfor %}
-                            <th><a href="/addColumn/{{id}}"><img src="../static/img/baseline-add-24px.svg" alt=""></a></th>
+                            <th><a class="baskerville" href="/addColumn/{{id}}"><img src="../static/img/baseline-add-24px.svg" alt=""></a></th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for row in data %}
                             <tr>
                                 {% for key,value in row.items() %}
-                                    <td>{{value}}</td>
+                                    <td class="baskerville">{{value}}</td>
                                 {% endfor %}
+                                <td><a href="/editRow/{{row['id']}}" class="baskerville">Edit Row</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

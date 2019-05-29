@@ -6,7 +6,9 @@ import pandas as pd
 import sqlalchemy
 app = Flask(__name__)
 import json
-
+import sys
+reload(sys)
+sys.setdefaultencoding('utf-8')
 # settings
 app.secret_key = "mysecretkey"
 UPLOAD_FOLDER = '/home/s3xy/Documents/university/plugins/inv4you/invs/'
@@ -22,7 +24,13 @@ def allowed_file(filename):
 
 @app.route('/')
 def Index():
-    return render_template('./auth/login.html')
+    if 'id' in session: 
+            inventories = db.searchForUserInventories(session['id'])
+            flash('User Logged Successfully')
+            return render_template('home.html', inventories=inventories)
+    else:
+        return render_template('./auth/login.html')
+    
 
 db = Database()
 
@@ -74,25 +82,44 @@ def edit(id):
         print(tableTitle[0]["title"])
         res = db.extractTableData(tableTitle[0]["title"])
         columns = set()
-        for key in res[0].keys():
-            columns.add(key)
+        try:
+            for key in res[0].keys():
+                columns.add(key)
+        except:
+            columns.add('id')
         flash('User Logged Successfully')
-        return render_template('edit.html', columns= columns, title=tableTitle[0]["title"], id=id, data=res).encode('unicode')
+        return render_template('edit.html', columns= columns, title=tableTitle[0]["title"], id=id, data=res)
     else:
         redirect(url_for(Index))
 
+
+@app.route('/newRow/<id>')
+def createNewRow(id):
+    return "I'm currently working on this feature, plis try again later. =)"
+    
+@app.route('/addColumn/<id>')
+def addColumnToTable(id):
+    return "I'm currently working on this feature, plis try again later. =)"
+
+@app.route('/editRow/<id>')
+def editRow(id):
+    return "I'm currently working on this feature, plis try again later. =)"
 
 @app.route('/saveNewInv', methods=["POST"])
 def saveNewInventory():
     if 'id' in session:
         title = request.form.get('title')
         des = request.form.get('description')
-        response = db.createInventory(session['id'],title,des)
-        if response:
-            flash('User Logged Successfully')
-            return redirect(url_for('Home'))
+        sqlTCrea = db.createSQLTable(title)
+        if sqlTCrea:
+            response = db.createInventory(session['id'],title,des)
+            if response:
+                flash('User Logged Successfully')
+                return redirect(url_for('Home'))
+            else:
+                return "Fail"
         else:
-            return "Fail"
+                return "Fail"
     else:
         redirect(url_for(Index))   
 
@@ -122,7 +149,7 @@ def uploadInv():
                     file.save(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
                     df = pd.read_csv(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
                     engine = sqlalchemy.create_engine('mysql://m7479tvdnwwfimqo:jse16k4dx7nd6l8l@a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/xpba22f95w8rrd8q')
-                    print(df.to_sql(name=file.filename, con=engine, index=False, if_exists='replace'))
+                    print(df.to_sql(name=file.filename, con=engine, index=True, if_exists='replace', index_label='id'))
                     print(file.filename + " saved!")
                     des = request.form.get('description')
                     response = db.createInventory(session['id'], file.filename, des)
