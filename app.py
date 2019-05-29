@@ -6,9 +6,6 @@ import pandas as pd
 import sqlalchemy
 app = Flask(__name__)
 import json
-import sys
-reload(sys)
-sys.setdefaultencoding('utf-8')
 # settings
 app.secret_key = "mysecretkey"
 UPLOAD_FOLDER = '/home/s3xy/Documents/university/plugins/inv4you/invs/'
