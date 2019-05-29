@@ -4,6 +4,7 @@ from db import Database
 from werkzeug.utils import secure_filename
 import pandas as pd
 import sqlalchemy
+import pymysql
 app = Flask(__name__)
 import json
 import sys
