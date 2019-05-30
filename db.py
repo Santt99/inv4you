@@ -201,3 +201,20 @@ class Database:
         finally:
             cursor.close()
             return True
+
+    def searchForDataInTableByColumn(self, tableTitle, columnTitle, valueToSearch):
+        cursor = self.connection.cursor()
+        response = ""
+        try:
+            with  cursor:
+                query = "SELECT * FROM `" + tableTitle + "`" "WHERE " + columnTitle + " like '%" + valueToSearch  + "%';";  
+                print(query)
+                cursor.execute(query)
+                result = cursor.fetchall()
+                response = result  
+        except:
+            print("Error!")
+        finally:
+            cursor.close()
+            return response
+        

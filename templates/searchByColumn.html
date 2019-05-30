@@ -1,6 +1,34 @@
 {% extends 'layout.html' %}
 {% block body %}
     <div class="container valign-wrapper " >
-            
+        <div class="row s12" style="padding-top: 10%;" >
+            <div class="col s12 m12 l12">
+                <form action="/search/{{id}}" method="POST">
+                    <div class="input-field col s12 m12 l12">
+                            <div class="row">
+                                <p><label>Selectin wich column you want to search by.</label></p>
+                                {% for column in columns %}
+                                <p>
+                                    <label>
+                                    <input name="typeOfData" type="radio" value="{{column}}" required/>
+                                    <span>{{column}}</span>
+                                    </label>
+                                </p>
+                                {% endfor %}
+                            </div>
+                        <div class="row">
+                            <input name="search" id="search" type="text" class="validate baskerville" required maxlength="100">
+                            <label for="search" class="baskerville">Search</label>
+                        </div>
+                        <div class="row">
+                                <p class="left"><a href="/home" >Cancel</a></p>
+                                <button class="btn waves-effect waves-light teal darken-1 baskerville right" >Search
+                                    <i class="material-icons right ">search</i>
+                                </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
 {% endblock %}    

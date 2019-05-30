@@ -105,8 +105,8 @@ def createNewRow(id):
                 values.append(request.form.get(column))
                 
             res = db.addCustomRow(tableTitle[0]["title"],columns,values)
-            print(res)
-            return "Done!"
+            flash('User Logged Successfully')
+            return redirect(url_for('Home'))
         elif request.method == 'GET':
             tableTitle = db.getTableNameById(id)
             res = db.extractTableData(tableTitle[0]["title"])
@@ -139,11 +139,25 @@ def addColumnToTable(id):
 @app.route('/search/<id>', methods=["POST", "GET"])
 def search(id):
     if 'id' in session:
+        tableTitle = db.getTableNameById(id)
+        table = tableTitle[0]["title"]
         if request.method == 'POST':
-            return "PPOST"
+            res = db.extractTableData(table)
+            typeOfData = request.form.get('typeOfData')
+            valueToSearch = request.form.get('search')
+            res = db.searchForDataInTableByColumn(table, typeOfData, valueToSearch)
+            columns = set()
+            try:
+                for key in res[0].keys():
+                    if key != 'id':
+                        columns.add(key)
+                flash('User Logged Successfully')
+                return render_template('edit.html', columns=columns, title=valueToSearch, id=id, data=res)
+            except:
+                return "Nothing like " + valueToSearch + " found in " + typeOfData + "." 
         elif request.method == 'GET':
             tableTitle = db.getTableNameById(id)
-            res = db.extractTableData(tableTitle[0]["title"])
+            res = db.extractTableData(table)
             columns = set()
             for key in res[0].keys():
                 if key != 'id':
@@ -169,7 +183,6 @@ def editRow(tableId, rowId):
                 values.append(request.form.get(column))
                 
             res = db.editCustomRow(tableTitle[0]["title"],rowId,columns,values)
-            print(res)
             return "Done!"
         elif request.method == 'GET':
             tableTitle = db.getTableNameById(tableId)
