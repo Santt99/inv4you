@@ -7,9 +7,6 @@ import sqlalchemy
 import pymysql
 app = Flask(__name__)
 import json
-import sys
-reload(sys)
-sys.setdefaultencoding('UTF8')
 # settings
 app.secret_key = "mysecretkey"
 UPLOAD_FOLDER = 'invs/'
