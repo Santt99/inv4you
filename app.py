@@ -6,9 +6,12 @@ import pandas as pd
 import sqlalchemy
 app = Flask(__name__)
 import json
+import sys
+reload(sys)
+sys.setdefaultencoding('UTF8')
 # settings
 app.secret_key = "mysecretkey"
-UPLOAD_FOLDER = '/home/s3xy/Documents/university/plugins/inv4you/invs/'
+UPLOAD_FOLDER = 'invs/'
 ALLOWED_EXTENSIONS = set(['csv'])
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
@@ -57,8 +60,9 @@ def Home():
 @app.route('/delete/<id>')
 def delete(id):
     if 'id' in session:
-        res = db.deleteInventory(id)
-        if(res):
+        tableTitle = db.getTableNameById(id)
+        res = db.deleteInventory(id,tableTitle[0]['title'])
+        if res:
             flash('User Logged Successfully')
             return redirect(url_for('Home'))
     else:
@@ -76,31 +80,104 @@ def create():
 def edit(id):
     if 'id' in session: 
         tableTitle = db.getTableNameById(id)
-        print(tableTitle[0]["title"])
         res = db.extractTableData(tableTitle[0]["title"])
         columns = set()
-        try:
-            for key in res[0].keys():
-                columns.add(key)
-        except:
-            columns.add('id')
+        for key in res[0].keys():
+            columns.add(key)
         flash('User Logged Successfully')
-        return render_template('edit.html', columns= columns, title=tableTitle[0]["title"], id=id, data=res)
+        return render_template('edit.html', columns=columns, title=tableTitle[0]["title"], id=id, data=res)
     else:
-        redirect(url_for(Index))
+        redirect(url_for("Index"))
 
 
-@app.route('/newRow/<id>')
+@app.route('/newRow/<id>', methods=["POST", "GET"])
 def createNewRow(id):
-    return "I'm currently working on this feature, plis try again later. =)"
-    
-@app.route('/addColumn/<id>')
-def addColumnToTable(id):
-    return "I'm currently working on this feature, plis try again later. =)"
+    if 'id' in session:
+        if request.method == 'POST':
+            tableTitle = db.getTableNameById(id)
+            res = db.extractTableData(tableTitle[0]["title"])
+            columns = []
+            for key in res[0].keys():
+                if key != 'id':
+                    columns.append(key)
+            values = []
+            for column in columns:
+                values.append(request.form.get(column))
+                
+            res = db.addCustomRow(tableTitle[0]["title"],columns,values)
+            print(res)
+            return "Done!"
+        elif request.method == 'GET':
+            tableTitle = db.getTableNameById(id)
+            res = db.extractTableData(tableTitle[0]["title"])
+            columns = set()
+            for key in res[0].keys():
+                if key != 'id':
+                    columns.add(key)
+            return render_template('./addRow.html', id=id, columns=columns)
+    else:
+        redirect(url_for("Index"))
 
-@app.route('/editRow/<id>')
-def editRow(id):
-    return "I'm currently working on this feature, plis try again later. =)"
+@app.route('/addColumn/<id>', methods=["POST", "GET"])
+def addColumnToTable(id):
+    if 'id' in session:
+        if request.method == 'POST':
+            newColumnTitle = request.form.get('columnTitle')
+            tableTitle = db.getTableNameById(id)
+            print(tableTitle)
+            response = db.addColumn(tableTitle[0]['title'],newColumnTitle)
+            if response:
+                flash('User Logged Successfully')
+                return redirect(url_for('Home'))
+            else:
+                return "Error, the column can't be added!"
+        elif request.method == 'GET':
+            return render_template('./addColumn.html', id=id)
+        
+    else:
+        redirect(url_for("Index")) 
+@app.route('/search/<id>', methods=["POST", "GET"])
+def search(id):
+    if 'id' in session:
+        if request.method == 'POST':
+            return "PPOST"
+        elif request.method == 'GET':
+            tableTitle = db.getTableNameById(id)
+            res = db.extractTableData(tableTitle[0]["title"])
+            columns = set()
+            for key in res[0].keys():
+                if key != 'id':
+                    columns.add(key)
+            print(columns)
+            return render_template('./searchByColumn.html', id=id, columns=columns)
+    else:
+        redirect(url_for("Index"))
+
+
+@app.route('/editRow/<tableId>/<rowId>', methods=["POST", "GET"])
+def editRow(tableId, rowId):
+    if 'id' in session:
+        if request.method == 'POST':
+            tableTitle = db.getTableNameById(tableId)
+            res = db.extractTableData(tableTitle[0]["title"])
+            columns = []
+            for key in res[0].keys():
+                if key != 'id':
+                    columns.append(key)
+            values = []
+            for column in columns:
+                values.append(request.form.get(column))
+                
+            res = db.editCustomRow(tableTitle[0]["title"],rowId,columns,values)
+            print(res)
+            return "Done!"
+        elif request.method == 'GET':
+            tableTitle = db.getTableNameById(tableId)
+            res = db.extractTableData(tableTitle[0]["title"])
+            data = db.searchForRowDataById(rowId, tableTitle[0]["title"])
+            return render_template('./editRow.html', tableId=tableId, rowId=rowId, columns=data)
+    else:
+        redirect(url_for("Index"))
 
 @app.route('/saveNewInv', methods=["POST"])
 def saveNewInventory():
@@ -126,7 +203,6 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
         dbResponse = db.createUser(email,password)
-        print(dbResponse)
         if dbResponse:
             flash('User Added Successfully')
             return redirect(url_for('Index'))
@@ -144,7 +220,7 @@ def uploadInv():
                 if request.files :
                     file = request.files["inv"]
                     file.save(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
-                    df = pd.read_csv(os.path.join(app.config["UPLOAD_FOLDER"],file.filename))
+                    df = pd.read_csv(os.path.join(app.root_path,app.config["UPLOAD_FOLDER"],file.filename))
                     engine = sqlalchemy.create_engine('mysql://m7479tvdnwwfimqo:jse16k4dx7nd6l8l@a07yd3a6okcidwap.cbetxkdyhwsb.us-east-1.rds.amazonaws.com:3306/xpba22f95w8rrd8q')
                     print(df.to_sql(name=file.filename, con=engine, index=True, if_exists='replace', index_label='id'))
                     print(file.filename + " saved!")

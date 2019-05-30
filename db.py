@@ -30,15 +30,15 @@ class Database:
             cursor.close()
             return result
 
-    def addColumn(self, tableTitle):
+    def addColumn(self, tableTitle, columnTitle):
         cursor = self.connection.cursor()
         result = False
         try:
             with  cursor:
-                    cursor.execute("INSERT INTO users (email, password) VALUES (%s, %s);",(email,password))
+                    query = "ALTER TABLE " + tableTitle + " ADD " + columnTitle + " VARCHAR(255);"
+                    print(query)
+                    cursor.execute(query)
                     result =  True
-                    print("User all ready exists!")
-                    result =  False
             self.connection.commit()
         except e:
             print(e)
@@ -51,7 +51,8 @@ class Database:
         response = ""
         try:
             with  cursor:
-                query = "SELECT * FROM xpba22f95w8rrd8q.`" + table + "`"
+                query = "SELECT * FROM xpba22f95w8rrd8q.`" + table + "`;"
+                print(query)
                 cursor.execute(query)
                 result = cursor.fetchall()
                 response = result
@@ -82,8 +83,8 @@ class Database:
         try:
             with  cursor:
                 query = "CREATE TABLE " + str(tableTitle) + " (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY);"
-                print (query)
                 cursor.execute(query)
+                cursor.execute("INSERT INTO " + str(tableTitle) +" (id) values(0);")
                 result = cursor.fetchall()
                 response = True
         except e:
@@ -116,26 +117,78 @@ class Database:
                 cursor.execute(query)
                 result = cursor.fetchall()
                 response = result  
-        except e:
-            print(e)
+        except:
+            print("Error!")
         finally:
             cursor.close()
             return response
             
+    def addCustomRow(self, table, columns, values):
+        cursor = self.connection.cursor()
+        query = ""
+        try:
+            with  cursor:
+                query = "INSERT INTO `" + str(table) + "` (" + str(columns[0]) + ", "
+                for column in range(1,len(columns) - 1):
+                    query += str(columns[column]) + ", "
+                query +=  str(columns[len(columns)-1]) + ") VALUES ('" + str(values[0]) + "', "
+                for value in range(1,len(values) - 1):
+                    query +=  "'" + str(values[value]) + "', "
+                query += "'" + str(values[len(values)-1]) + "');"             
+                cursor.execute(query)
+            self.connection.commit()
+        except :
+            print("Error!")
+            return query
+        finally:
+            cursor.close()
 
-    def deleteInventory(self,id):
+    def editCustomRow(self, table, rowId , columns, values):
+        cursor = self.connection.cursor()
+        query = ""
+        try:
+            with  cursor:
+                query = "UPDATE `" + str(table) + "` SET "
+                query += columns[0] + "='" + values[0] + "'"
+                for curr in range(1,len(columns)):
+                    query += ", " + columns[curr] + "='" + values[curr] + "'"
+                query += " WHERE id=" + rowId + ";";
+                cursor.execute(query)
+            self.connection.commit()
+        except :
+            print("Error!")
+            return query
+        finally:
+            cursor.close()
+
+    def deleteInventory(self,id, tableTitle):
         cursor = self.connection.cursor()
         try:
             with  cursor:
                 query = "DELETE FROM inventories WHERE inventory_id=" + str(id) + ";"
                 cursor.execute(query)
+                if tableTitle != "inventories" and tableTitle != "users":
+                    cursor.execute("DROP TABLE " + tableTitle + ";")
             self.connection.commit()
         except:
             return False
         finally:
             cursor.close()
             return True
-
+    def searchForRowDataById(self, id, tableTitle):
+        cursor = self.connection.cursor()
+        response = ""
+        try:
+            with  cursor:
+                cursor.execute("SELECT * FROM `" + tableTitle + "` " + "WHERE id=" + id + ";")
+                result = cursor.fetchone()
+                response = result  
+        except:
+            return False
+        finally:
+            cursor.close()
+            return response
+        
     def createInventory(self, owner_id, title, description):
         cursor = self.connection.cursor()
         response = ""

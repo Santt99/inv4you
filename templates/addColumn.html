@@ -1,0 +1,26 @@
+{% extends 'layout.html' %}
+
+{% block body %}
+<div class="container valign-wrapper " >
+  <div class="row s12" style="padding-top: 10%;" >
+    <div class="col s12">
+      <form action="/addColumn/{{id}}" method="post">
+        <div class="row">
+          <b>
+            (Use only lowercase and don't use spaces in the title)
+          </b>
+        </div>
+        <div class="row">
+            <div class="input-field col s12">
+                <input name="columnTitle" id="columnTitle" type="text" class="validate baskerville" required maxlength="50">
+                <label for="columnTitle" class="baskerville">Column Title </label>
+            </div>
+        </div>
+        <button class="btn waves-effect waves-light teal darken-1 baskerville" >Add
+            <i class="material-icons right ">send</i>
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

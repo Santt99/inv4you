@@ -7,6 +7,7 @@
         </div>
         <div class="row">
             <p><a href="/newRow/{{id}}" class="baskerville left">Create New Row</a></p>
+            <p><a href="/search/{{id}}" class="baskerville right">Search</a></p>
         </div>
         <div class="row">
                 <table>
@@ -15,7 +16,7 @@
                             {% for column in columns %}
                                 <th class="baskerville">{{column}}</th>
                             {% endfor %}
-                            <th><a class="baskerville" href="/addColumn/{{id}}"><img src="../static/img/baseline-add-24px.svg" alt=""></a></th>
+                            <th><a class="baskerville" href="/addColumn/{{id}}"><img src="../static/img/baseline-add-24px.svg" alt=""></a>Add Column</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -24,7 +25,7 @@
                                 {% for key,value in row.items() %}
                                     <td class="baskerville">{{value}}</td>
                                 {% endfor %}
-                                <td><a href="/editRow/{{row['id']}}" class="baskerville">Edit Row</a></td>
+                                <td><a href="/editRow/{{id}}/{{row['id']}}" class="baskerville">Edit Row</a></td>
                             </tr>
                         {% endfor %}
                     </tbody>

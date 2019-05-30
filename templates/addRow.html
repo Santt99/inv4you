@@ -1,0 +1,29 @@
+{% extends 'layout.html' %}
+{% block body %}
+<div class="container valign-wrapper " >
+  <div class="row s12" style="padding-top: 10%;" >
+    <div class="col s12">
+      <form action="/newRow/{{id}}" method="post">
+        <div class="row">
+                {% for column in columns %}
+                    {% if column != 'id' %}
+                        <div class="input-field col s12 m6 l4">
+                            <input name="{{column}}" id="{{column}}" type="text" class="validate baskerville" required maxlength="255">
+                            <label for="{{column}}" class="baskerville">{{column}}</label>
+                        </div>
+                    {%endif%}
+                {% endfor %}
+            
+        </div>
+        <div class="row">
+            <p class="left"><a href="/home" >Cancel</a></p>
+            <button class="btn waves-effect waves-light teal darken-1 baskerville right" >Add Row
+                <i class="material-icons right ">send</i>
+            </button>
+        </div>
+      </form>
+      
+    </div>
+  </div>
+</div>
+{% endblock %}
