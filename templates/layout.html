@@ -17,11 +17,9 @@
                     <a href="/" class="brand-logo left nunito">Inv4you</a>
                     {% with messages = get_flashed_messages()  %}
                     {% if messages %}
-                        {% if 'User Logged Successfully' == messages[0] %}
                         
-                        {% else %}
                         <a href="/register" class="right baskerville">Register</a>
-                        {% endif %}  
+                         
                     {% endif %}  
                     {% endwith %}
                 </div>
